@@ -5,12 +5,9 @@ ENV CLAMAV_NO_FRESHCLAMD=false \
     CLAMAV_NO_CLAMD=false \
     CLAMAV_NO_MILTERD=true \
     CLAMD_STARTUP_TIMEOUT=300 \
-    FRESHCLAM_CHECKS=12 \  # Check every 2 hours
-    CLAMD_CONCURRENT_RELOAD=no \  # Save memory
-    FRESHCLAM_TESTDATABASES=no  # Save memory during updates
-
-# Create volume for databases
-RAILWAY_VOLUME=/var/lib/clamav
+    FRESHCLAM_CHECKS=12 \
+    CLAMD_CONCURRENT_RELOAD=no \
+    FRESHCLAM_TESTDATABASES=no
 
 # Expose clamd port
 EXPOSE 3310
