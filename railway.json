@@ -10,7 +10,7 @@
   },
   "volumes": [
     {
-      "name": "clamav_db",
+      "name": "clamav_data",
       "mountPath": "/var/lib/clamav",
       "persist": true
     }
