@@ -1,18 +1,22 @@
-FROM clamav/clamav:latest
+FROM debian:bullseye
 
-# Update virus databases during build
+# Update & install ClamAV and daemon
+RUN apt-get update && \
+    apt-get install -y clamav clamav-daemon && \
+    rm -rf /var/lib/apt/lists/*
+
+# Update virus definitions
 RUN freshclam
 
-# Copy custom configuration
-COPY clamd.conf /etc/clamav/clamd.conf
+# Ensure the clamav user has necessary permissions
+RUN mkdir -p /var/run/clamav && \
+    chown clamav:clamav /var/run/clamav
 
-# Create directory for freshclam
-RUN mkdir -p /var/lib/clamav && \
-    chown clamav:clamav /var/lib/clamav
-
-# Expose ClamAV TCP port
+# Expose ClamAV daemon port
 EXPOSE 3310
 
-# Start freshclam in background (auto-updates every 2 hours)
-# and run clamd in foreground
-CMD ["sh", "-c", "freshclam -d -c 2 & exec clamd -F"]
+# Set working directory
+WORKDIR /app
+
+# Start clamd as the default command
+CMD ["clamd", "--foreground", "--config-file=/etc/clamav/clamd.conf"]
