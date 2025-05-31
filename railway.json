@@ -1,0 +1,23 @@
+{
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfile": "Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "sh -c 'freshclam -d --checks=4 && clamd'",
+    "restartPolicy": {
+      "type": "ALWAYS"
+    }
+  },
+  "resources": {
+    "memory": 2048,
+    "cpu": 2
+  },
+  "ports": [
+    {
+      "port": 3310,
+      "protocol": "TCP",
+      "public": true
+    }
+  ]
+}
