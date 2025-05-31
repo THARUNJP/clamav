@@ -1,20 +1,20 @@
 FROM clamav/clamav:stable_base
 
-# Create config directory
-RUN mkdir -p /etc/clamav
+# Create and configure directory with proper permissions
+RUN mkdir -p /etc/clamav && \
+    chown clamav:clamav /etc/clamav && \
+    chmod 750 /etc/clamav
 
-# Copy custom configurations
-COPY config/clamd.conf /etc/clamav/clamd.conf
-COPY config/freshclam.conf /etc/clamav/freshclam.conf
+# Copy config files with correct ownership
+COPY --chown=clamav:clamav config/clamd.conf /etc/clamav/
+COPY --chown=clamav:clamav config/freshclam.conf /etc/clamav/
 
-# Set environment variables
-ENV CLAMAV_NO_FRESHCLAMD=false \
-    CLAMAV_NO_CLAMD=false \
-    CLAMAV_NO_MILTERD=true \
-    CLAMD_STARTUP_TIMEOUT=600 \
-    FRESHCLAM_CHECKS=4 \
-    CLAMD_CONCURRENT_RELOAD=no \
-    FRESHCLAM_TESTDATABASES=no
+# Set config file permissions
+RUN chmod 640 /etc/clamav/*.conf
+
+# Essential environment variables
+ENV CLAMD_STARTUP_TIMEOUT=600 \
+    FRESHCLAM_CHECKS=4
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=300s \
