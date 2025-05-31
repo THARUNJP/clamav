@@ -1,8 +1,11 @@
-# Use the official ClamAV image
-FROM clamav/clamav:latest
-
-# Expose the ClamAV TCP port
+FROM ubuntu
+#Install requires
+RUN apt-get update && apt-get upgrade -y && apt-get install -y clamav \
+	clamav-daemon \
+	clamav-base \
+	clamav-freshclam \
+	clamdscan \
+	cron vim wget
+# Clear cache
 EXPOSE 3310
-
-# Start ClamAV daemon in the foreground (so container stays running)
-CMD ["clamd", "-F"]
+ENTRYPOINT ["clam-start"]
