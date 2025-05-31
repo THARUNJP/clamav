@@ -1,18 +1,19 @@
 {
+  "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "env": {
-      "DEBIAN_FRONTEND": "noninteractive"
-    }
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "clamd -F",
-    "restartPolicy": "always"
-  },
-  "services": [
-    {
-      "name": "clamav",
-      "port": 3310,
-      "protocol": "tcp"
+    "restartPolicy": {
+      "type": "ALWAYS",
+      "maximumRetryCount": 3
+    },
+    "resources": {
+      "memory": 4096,
+      "cpu": 2
     }
-  ]
+  },
+  "healthCheckPath": "/",
+  "healthCheckTimeout": 10
 }
