@@ -1,16 +1,22 @@
-FROM ubuntu:22.04
+FROM clamav/clamav:stable_base
 
-RUN apt-get update && \
-    apt-get install -y clamav clamav-daemon && \
-    rm -rf /var/lib/apt/lists/*
+# Optimize for Railway deployment
+ENV CLAMAV_NO_FRESHCLAMD=false \
+    CLAMAV_NO_CLAMD=false \
+    CLAMAV_NO_MILTERD=true \
+    CLAMD_STARTUP_TIMEOUT=300 \
+    FRESHCLAM_CHECKS=12 \  # Check every 2 hours
+    CLAMD_CONCURRENT_RELOAD=no \  # Save memory
+    FRESHCLAM_TESTDATABASES=no  # Save memory during updates
 
-RUN freshclam
+# Create volume for databases
+VOLUME /var/lib/clamav
 
-RUN mkdir -p /var/run/clamav && \
-    chown clamav:clamav /var/run/clamav
-
+# Expose clamd port
 EXPOSE 3310
 
-WORKDIR /app
+# Health check using clamd's TCP listener
+HEALTHCHECK --interval=30s --timeout=10s \
+  CMD echo PING | nc localhost 3310 | grep -q PONG || exit 1
 
-CMD ["clamd", "--foreground", "--config-file=/etc/clamav/clamd.conf"]
+# Keep default entrypoint
