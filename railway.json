@@ -1,23 +1,18 @@
 {
   "build": {
-    "builder": "DOCKERFILE",
-    "dockerfile": "Dockerfile"
-  },
-  "deploy": {
-    "startCommand": "sh -c 'freshclam -d --checks=4 && clamd'",
-    "restartPolicy": {
-      "type": "ALWAYS"
+    "env": {
+      "DEBIAN_FRONTEND": "noninteractive"
     }
   },
-  "resources": {
-    "memory": 2048,
-    "cpu": 2
+  "deploy": {
+    "startCommand": "clamd -F",
+    "restartPolicy": "always"
   },
-  "ports": [
+  "services": [
     {
+      "name": "clamav",
       "port": 3310,
-      "protocol": "TCP",
-      "public": true
+      "protocol": "tcp"
     }
   ]
 }
