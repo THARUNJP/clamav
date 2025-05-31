@@ -10,7 +10,7 @@ ENV CLAMAV_NO_FRESHCLAMD=false \
     FRESHCLAM_TESTDATABASES=no  # Save memory during updates
 
 # Create volume for databases
-VOLUME /var/lib/clamav
+RAILWAY_VOLUME=/var/lib/clamav
 
 # Expose clamd port
 EXPOSE 3310
