@@ -1,6 +1,8 @@
-FROM mk0x/docker-clamav
+# Use the official ClamAV image
+FROM clamav/clamav:latest
 
+# Expose the ClamAV TCP port
 EXPOSE 3310
 
-# Run freshclam to update virus DB, then start clamd in foreground (-F)
-CMD freshclam && clamd -F
+# Start ClamAV daemon in the foreground (so container stays running)
+CMD ["clamd", "-F"]
